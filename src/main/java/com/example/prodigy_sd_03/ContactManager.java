@@ -18,7 +18,6 @@ public class ContactManager extends Application {
     private List<Contact> contacts;
     private ListView<Contact> contactListView;
     private TextField nameField, phoneField, emailField;
-    private Button addButton, editButton, deleteButton, clearButton;
 
     @Override
     public void start(Stage primaryStage) {
@@ -32,34 +31,34 @@ public class ContactManager extends Application {
         grid.setVgap(5);
         grid.setHgap(5);
 
-        Label nameLabel = new Label("Name:");
+        Label nameLabel = new Label("Name");
         GridPane.setConstraints(nameLabel, 1, 0);
         nameField = new TextField();
         GridPane.setConstraints(nameField, 2, 0);
 
-        Label phoneLabel = new Label("Phone:");
+        Label phoneLabel = new Label("Phone");
         GridPane.setConstraints(phoneLabel, 1, 1);
         phoneField = new TextField();
         GridPane.setConstraints(phoneField, 2, 1);
 
-        Label emailLabel = new Label("Email:");
+        Label emailLabel = new Label("Email");
         GridPane.setConstraints(emailLabel, 1, 2);
         emailField = new TextField();
         GridPane.setConstraints(emailField, 2, 2);
 
-        addButton = new Button("Add");
+        Button addButton = new Button("Add");
         addButton.setOnAction(e -> addContact());
         GridPane.setConstraints(addButton, 0, 3);
 
-        editButton = new Button("Edit");
+        Button editButton = new Button("Edit");
         editButton.setOnAction(e -> editContact());
         GridPane.setConstraints(editButton, 1, 3);
 
-        deleteButton = new Button("Delete");
+        Button deleteButton = new Button("Delete");
         deleteButton.setOnAction(e -> deleteContact());
         GridPane.setConstraints(deleteButton, 2, 3);
 
-        clearButton = new Button("Clear");
+        Button clearButton = new Button("Clear");
         clearButton.setOnAction(e -> clearFields());
         GridPane.setConstraints(clearButton, 3, 3);
 
@@ -85,12 +84,19 @@ public class ContactManager extends Application {
         String name = nameField.getText();
         String phone = phoneField.getText();
         String email = emailField.getText();
-
-        Contact contact = new Contact(name, phone, email);
-        contacts.add(contact);
-        contactListView.getItems().add(contact);
-        saveContactsToFile(); // Save contacts to file
-        clearFields();
+        if (Objects.equals(name, ""))
+            showAlert("Error", "Please enter a name.");
+        else if (Objects.equals(phone, ""))
+            showAlert("Error", "Please enter phone number.");
+        else if(Objects.equals(email, ""))
+            showAlert("Error", "Please enter email address.");
+        else{
+            Contact contact = new Contact(name, phone, email);
+            contacts.add(contact);
+            contactListView.getItems().add(contact);
+            saveContactsToFile(); // Save contacts to file
+            clearFields();
+        }
     }
 
     private void editContact() {
@@ -101,7 +107,6 @@ public class ContactManager extends Application {
             selectedContact.setEmail(emailField.getText());
             contactListView.refresh(); // Refresh list view to reflect changes
             saveContactsToFile(); // Save contacts to file
-            clearFields();
         } else {
             showAlert("Error", "Please select a contact to edit.");
         }
